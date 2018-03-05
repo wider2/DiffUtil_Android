@@ -7,8 +7,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import util.diffutil.adapter.EmployeeRecyclerViewAdapter;
+import util.diffutil.adapter.OnProductRequestClickedListener;
 import util.diffutil.utils.DummyEmployeeDataUtils;
 
 import butterknife.BindView;
@@ -23,7 +25,8 @@ public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
-
+    @BindView(R.id.tv_output)
+    TextView tvOutput;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,11 +36,10 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
 
-        mRecyclerViewAdapter = new EmployeeRecyclerViewAdapter(DummyEmployeeDataUtils.getEmployeeListSortedByRole());
+        mRecyclerViewAdapter = new EmployeeRecyclerViewAdapter(DummyEmployeeDataUtils.getEmployeeListSortedByRole(), mListener);
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(mRecyclerViewAdapter);
-
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -46,8 +48,14 @@ public class MainActivity extends AppCompatActivity {
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
-
     }
+
+    OnProductRequestClickedListener mListener = new OnProductRequestClickedListener() {
+        @Override
+        public void onProfileRequestClicked(int position, String data) {
+            tvOutput.setText("Output: " + data);
+        }
+    };
 
 
     @Override

@@ -1,2 +1,3 @@
-DiffUtil of RecyclerView is intended to compare two list
-not to update whole list if some fields changed
+DiffUtil of RecyclerView is intended to compare two list.
+
+not to update whole list if some fields changed.

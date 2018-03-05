@@ -1,15 +1,21 @@
 package util.diffutil.model;
 
+import java.security.Timestamp;
+
 public class Employee {
 
+    public static final int UPDATE_TIME = 1;
+    public static final int UPDATE_THUMB = 2;
     public int id;
     public String name;
     public String role;
+    public long timestamp;
 
-    public Employee(final int id, final String name, final String role) {
+    public Employee(final int id, final String name, final String role, long timestamp) {
         this.id = id;
         this.name = name;
         this.role = role;
+        this.timestamp = timestamp;
     }
 
     public int getId() {
@@ -22,6 +28,10 @@ public class Employee {
 
     public String getRole() {
         return role;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
     }
 
     @Override

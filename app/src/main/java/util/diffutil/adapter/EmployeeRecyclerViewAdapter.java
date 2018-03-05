@@ -1,5 +1,6 @@
 package util.diffutil.adapter;
 
+import android.os.Bundle;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,14 +14,20 @@ import util.diffutil.model.Employee;
 import java.util.ArrayList;
 import java.util.List;
 
+import static util.diffutil.model.Employee.UPDATE_THUMB;
+import static util.diffutil.model.Employee.UPDATE_TIME;
+
 
 public class EmployeeRecyclerViewAdapter extends
         RecyclerView.Adapter<EmployeeRecyclerViewAdapter.ViewHolder> {
 
     private List<Employee> mEmployees = new ArrayList<>();
+    private OnProductRequestClickedListener mListener;
 
-    public EmployeeRecyclerViewAdapter(List<Employee> employeeList) {
+
+    public EmployeeRecyclerViewAdapter(List<Employee> employeeList, OnProductRequestClickedListener listener) {
         this.mEmployees.addAll(employeeList);
+        this.mListener = listener;
     }
 
     @Override
@@ -30,24 +37,62 @@ public class EmployeeRecyclerViewAdapter extends
         return new ViewHolder(view);
     }
 
+
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position, List<Object> payloads) {
+
+        if (payloads.isEmpty()) {
+            mListener.onProfileRequestClicked(position, "");
+            onBindViewHolder(holder, position);
+        } else {
+
+            Bundle bundle = (Bundle) payloads.get(0);
+            if (bundle.size() != 0) {
+                String name = bundle.getString("name");
+                if (name != null) {
+                    holder.tv_name.setText(name);
+                }
+                String role = bundle.getString("role");
+                if (role != null) {
+                    holder.tv_role.setText(role);
+                }
+            }
+            mListener.onProfileRequestClicked(position, bundle.toString());
+/*
+            for (Object data : payloads) {
+                switch ((int) data) {
+                    case UPDATE_THUMB:
+                        mListener.onProfileRequestClicked(position, data.toString());
+                        //AsyncImageLoader.loadPicture(holder.thumbView, media);
+                        break;
+                    case UPDATE_TIME:
+                        mListener.onProfileRequestClicked(position, data.toString());
+                        //fillView(holder, media);
+                        break;
+                }
+            }
+            */
+        }
+    }
+
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         final Employee employee = mEmployees.get(position);
 
-        holder.name.setText(employee.getName());
-        holder.role.setText(employee.getRole());
+        holder.tv_name.setText(employee.getName());
+        holder.tv_role.setText(employee.getRole());
     }
 
-    //new updated data
+    //trigger DiffUtil to detect changes.
     public void updateEmployeeListItems(List<Employee> employees) {
         //calling the CallBack class and getting the difference between old and new list and dispatching it to the adapter.
         final EmployeeDiffCallback diffCallback = new EmployeeDiffCallback(this.mEmployees, employees);
         final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
 
-        diffResult.dispatchUpdatesTo(this);
         this.mEmployees.clear();
         this.mEmployees.addAll(employees);
-
+        //adapter will receive all the corresponding notifyItemRange events
+        diffResult.dispatchUpdatesTo(this);
     }
 
     @Override
@@ -56,13 +101,13 @@ public class EmployeeRecyclerViewAdapter extends
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private final TextView role;
-        private final TextView name;
+        private final TextView tv_role;
+        private final TextView tv_name;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            name = (TextView) itemView.findViewById(R.id.employee_name);
-            role = (TextView) itemView.findViewById(R.id.employee_role);
+            tv_name = (TextView) itemView.findViewById(R.id.employee_name);
+            tv_role = (TextView) itemView.findViewById(R.id.employee_role);
         }
     }
 }

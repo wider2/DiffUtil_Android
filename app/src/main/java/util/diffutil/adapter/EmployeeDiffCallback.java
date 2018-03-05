@@ -6,7 +6,11 @@ import android.support.v7.util.DiffUtil;
 
 import util.diffutil.model.Employee;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static util.diffutil.model.Employee.UPDATE_THUMB;
+import static util.diffutil.model.Employee.UPDATE_TIME;
 
 public class EmployeeDiffCallback extends DiffUtil.Callback {
 
@@ -47,19 +51,28 @@ public class EmployeeDiffCallback extends DiffUtil.Callback {
         // Implement method if you're going to use ItemAnimator
         //return super.getChangePayload(oldItemPosition, newItemPosition);
 
-        Employee newContact = mNewEmployeeList.get(newItemPosition);
-        Employee oldContact = mOldEmployeeList.get(oldItemPosition);
+        Employee newItem = mNewEmployeeList.get(newItemPosition);
+        //Employee oldItem = mOldEmployeeList.get(oldItemPosition);
+        Employee oldItem = new Employee(0, "", "", 0);
+        if (oldItemPosition < mOldEmployeeList.size()) oldItem = mOldEmployeeList.get(oldItemPosition);
 
         Bundle diff = new Bundle();
-        if(!newContact.getName().equals(oldContact.getName())){
-            diff.putString("name", newContact.getName());
+        if(!newItem.getName().equals(oldItem.getName())){
+            diff.putString("name", newItem.getName());
         }
-        if(!newContact.getRole().equals (oldContact.getRole())){
-            diff.putString("role", newContact.getRole());
+        if(!newItem.getRole().equals(oldItem.getRole())){
+            diff.putString("role", newItem.getRole());
         }
         if (diff.size()==0){
             return null;
         }
         return diff;
+/*
+        if (oldItem.getTimestamp() != newItem.getTimestamp()) {
+            return UPDATE_TIME;
+        } else {
+            return UPDATE_THUMB;
+        }
+        */
     }
 }
