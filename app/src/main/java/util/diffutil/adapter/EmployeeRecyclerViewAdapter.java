@@ -42,8 +42,9 @@ public class EmployeeRecyclerViewAdapter extends
     public void onBindViewHolder(ViewHolder holder, int position, List<Object> payloads) {
 
         if (payloads.isEmpty()) {
-            mListener.onProfileRequestClicked(position, "");
-            onBindViewHolder(holder, position);
+            //mListener.onProfileRequestClicked(position, "");
+            //onBindViewHolder(holder, position);
+            super.onBindViewHolder(holder, position, payloads);
         } else {
 
             Bundle bundle = (Bundle) payloads.get(0);
@@ -58,20 +59,6 @@ public class EmployeeRecyclerViewAdapter extends
                 }
             }
             mListener.onProfileRequestClicked(position, bundle.toString());
-/*
-            for (Object data : payloads) {
-                switch ((int) data) {
-                    case UPDATE_THUMB:
-                        mListener.onProfileRequestClicked(position, data.toString());
-                        //AsyncImageLoader.loadPicture(holder.thumbView, media);
-                        break;
-                    case UPDATE_TIME:
-                        mListener.onProfileRequestClicked(position, data.toString());
-                        //fillView(holder, media);
-                        break;
-                }
-            }
-            */
         }
     }
 
